@@ -62,7 +62,7 @@ namespace MediaControl.ViewModels
             }          
         }
         
-        private void Play()
+        public void Play()
         {
             if (!string.IsNullOrEmpty(MediaUrl))
             {

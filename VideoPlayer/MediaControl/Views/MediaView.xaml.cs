@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System.IO;
+using System.Windows.Input;
 using MediaControl.Events;
 using MediaControl.ViewModels;
 using System;
@@ -35,13 +36,25 @@ namespace MediaControl.Views
             InitializeComponent();
 
             var viewModel = new MediaViewModel();
-            
+
+            InitMediaPlayer(viewModel);
+        }
+
+        public MediaView(MediaViewModel viewModel)
+        {
+            InitializeComponent();
+
+            InitMediaPlayer(viewModel);
+        }
+
+        private void InitMediaPlayer(MediaViewModel viewModel)
+        {
             _mediaPlay = MediaPlay.Forward;
             _isDragging = false;
 
             this.DataContext = viewModel;
 
-            viewModel.PlayRequested += (sender, e) => { media.Play(); };
+            viewModel.PlayRequested += (sender, e) => media.Play();
 
             _timer = new DispatcherTimer();
             _timer.Interval = TimeSpan.FromMilliseconds(200);
@@ -76,57 +89,6 @@ namespace MediaControl.Views
 
             media.MediaEnded += (o, e) => { media.Stop(); btnPlay.IsChecked = false; };
 
-            sliderVolume.IsEnabled = false;
-
-            this.Loaded += (sender, e) => { _parentWindow = Window.GetWindow(this); _parentWindow.Background = Brushes.Black; };
-
-            viewModel.ScreenSizeChangeRequested += (sender, e) => { setFullScreen(((ScreenSizeEventArgs)e).Fullscreen); };
-        }
-
-        public MediaView(MediaViewModel viewModel)
-        {
-            InitializeComponent();
-
-            _mediaPlay = MediaPlay.Forward;
-            _isDragging = false;
-
-            this.DataContext = viewModel;
-
-            viewModel.PlayRequested += (sender, e) => { media.Play(); };
-
-            _timer = new DispatcherTimer();
-            _timer.Interval = TimeSpan.FromMilliseconds(200); 
-            _timer.Tick += new EventHandler(timer_Tick);
-            _timer.Stop();
-
-            media.MediaOpened += (o, e) =>
-            {
-                _timer.Start();
-
-                media.ScrubbingEnabled = false;
-
-                sliderVolume.IsEnabled = media.IsLoaded;
-
-                if (media.NaturalDuration.HasTimeSpan)
-                {
-                    var ts = media.NaturalDuration.TimeSpan;
-                    sliderTime.Minimum = 0;
-                    sliderTime.Maximum = ts.TotalSeconds;
-                    sliderTime.SmallChange = 1;
-                    sliderTime.LargeChange = Math.Min(10, ts.Seconds / 10);
-
-                    timeEnd.Content = new DateTime(ts.Ticks).ToString("mm:ss");
-                }
-              
-            };
-
-            media.MediaFailed += (o,e) => 
-            { 
-                //to do: think if here or in viewmodel to report of failed media?!
-            };
-
-            media.MediaEnded += (o, e) => { media.Stop(); btnPlay.IsChecked = false; };           
-         
             sliderVolume.IsEnabled = false;
 
             this.Loaded += (sender, e) => { _parentWindow = Window.GetWindow(this); _parentWindow.Background = Brushes.Black; };
@@ -280,8 +242,12 @@ namespace MediaControl.Views
             if (fileName.Length > 0)
             {
                 var videoPath = fileName[0];
-                media.Source = new Uri(videoPath);
-                media.Play();
+                var title = Path.GetFileName(videoPath);
+             
+                var mediaViewModel = (MediaViewModel)this.DataContext;
+                mediaViewModel.MediaUrl = videoPath;
+                mediaViewModel.MediaTitle = title;
+                mediaViewModel.Play();
             }
             e.Handled = true; 
         }
