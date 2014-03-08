@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:commands="clr-namespace:Microsoft.Practices.Prism.Commands;assembly=Microsoft.Practices.Prism"
-             mc:Ignorable="d">
+             mc:Ignorable="d" Drop="MediaView_OnDrop">
     <UserControl.Resources>    
         <Style x:Key="ReloadButtonStyle" TargetType="{x:Type ButtonBase}">
             <Setter Property="Margin" Value="0,0,21,0"/>
@@ -262,7 +262,7 @@
     <UserControl.InputBindings>
         <KeyBinding Key="Escape" Command="{Binding EscCommand}"></KeyBinding>
     </UserControl.InputBindings>
-    <Grid Background="#373737" HorizontalAlignment="Center">
+    <Grid Background="#373737" HorizontalAlignment="Center" AllowDrop="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="10"/>

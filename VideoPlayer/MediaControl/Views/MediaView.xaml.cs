@@ -273,5 +273,17 @@ namespace MediaControl.Views
         {
             media.Position = TimeSpan.FromSeconds(sliderTime.Value);
         }
+
+        private void MediaView_OnDrop(object sender, DragEventArgs e)
+        {
+            var fileName = (String[])e.Data.GetData(DataFormats.FileDrop, true);
+            if (fileName.Length > 0)
+            {
+                var videoPath = fileName[0];
+                media.Source = new Uri(videoPath);
+                media.Play();
+            }
+            e.Handled = true; 
+        }
     }
 }
