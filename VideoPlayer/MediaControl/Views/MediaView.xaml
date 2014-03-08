@@ -4,8 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:commands="clr-namespace:Microsoft.Practices.Prism.Commands;assembly=Microsoft.Practices.Prism"
+             xmlns:converters="clr-namespace:MediaControl.Converters"
              mc:Ignorable="d" Drop="MediaView_OnDrop">
-    <UserControl.Resources>    
+    <UserControl.Resources>
+        
+        <converters:NullToStringConverter x:Key="NullConverter" />
+
         <Style x:Key="ReloadButtonStyle" TargetType="{x:Type ButtonBase}">
             <Setter Property="Margin" Value="0,0,21,0"/>
             <Setter Property="Template">
@@ -274,7 +278,7 @@
             <ColumnDefinition Width="192"/>
         </Grid.ColumnDefinitions>
         <MediaElement Grid.Row="0" Grid.ColumnSpan="3"
-            x:Name="media" Source="{Binding MediaUrl}" LoadedBehavior="Manual" UnloadedBehavior="Stop" Stretch="Uniform">
+            x:Name="media" Source="{Binding MediaUrl, Converter={StaticResource NullConverter}}" LoadedBehavior="Manual" UnloadedBehavior="Stop" Stretch="Uniform">
         </MediaElement>
         <Slider x:Name="sliderTime" IsMoveToPointEnabled="True" Style="{StaticResource CustomStyleSlider}" Grid.Row="1" Grid.ColumnSpan="3" ValueChanged="sliderTime_ValueChanged" ></Slider>
         <StackPanel Grid.Row="2" Grid.Column="0">
@@ -284,7 +288,7 @@
                     <RowDefinition Height="25"/>
                 </Grid.RowDefinitions>
                 <Label VerticalAlignment="top" HorizontalAlignment="Left" Grid.Row="0" Background="#373737">
-                    <TextBlock Background="#373737" FontSize="13" Foreground="#ffffff" TextWrapping="Wrap" Text="{Binding MediaTitle}"/>
+                    <TextBlock Background="#373737" FontSize="13" Foreground="#ffffff" TextWrapping="Wrap" Text="{Binding MediaTitle, Converter={StaticResource NullConverter}}"/>
                 </Label>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.Row="1">
                     <Label x:Name="timeStart" Margin="0,0,-8,0"  TextBlock.FontSize="13" TextBlock.Foreground="#FFF"/>
